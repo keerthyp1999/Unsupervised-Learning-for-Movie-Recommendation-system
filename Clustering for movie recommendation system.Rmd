@@ -1,0 +1,143 @@
+---
+title: "Project"
+output: html_document
+date: "2023-04-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+df <- readr::read_csv("C:\\Users\\vanam\\Desktop\\MS IN DATA SCIENCE\\SDM2\\Project\\Movie-Dataset-Latest.csv",show_col_types = FALSE)
+head(df)
+```
+```{r}
+#Summary of dataset
+str(df)
+```
+```{r}
+summary(df)
+
+```
+
+
+```{r}
+#Checking for null values
+colSums(is.na(df))
+```
+
+```{r}
+#Converting the column type of release_date to date type-Already the present type is date type-no need of conversion
+df$release_date <- as.Date(df$release_date, format = "%Y-%m-%d")
+```
+
+```{r}
+library(lubridate)
+df$year <- year(as.Date(df$release_date))
+df$month <- month(as.Date(df$release_date))
+```
+
+```{r}
+df1 <- df[, !(names(df) %in% c('Unnamed: 0', 'id', 'release_date', 'overview', 'video', 'year', 'month','title'))]
+```
+
+```{r}
+df_100 <- head(df[order(-df$popularity), ], 100)
+```
+#DATA VISUALIZATION
+
+```{r}
+library(corrplot)
+
+# Compute correlation matrix
+corr_matrix <- cor(df1)
+
+# Create correlation plot with annotations
+corrplot(corr_matrix, type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45, 
+         method = "circle", number.cex = 0.8, 
+         addCoef.col = "black", 
+         p.mat = corr_matrix, sig.level = 0.05, insig = "blank")
+
+```
+
+```{r}
+library(ggplot2)
+
+# Create data frame with total popularity by year
+df_year <- aggregate(df$popularity, by = list(df$year), FUN = sum)
+names(df_year) <- c("year", "total_popularity")
+
+# Create bar plot
+ggplot(df_year, aes(x = year, y = total_popularity)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  ggtitle("Total Popularity of Movies by Year") +
+  xlab("Year") +
+  ylab("Total Popularity") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r}
+head(df_100, 10)
+```
+
+```{r}
+library(ggplot2)
+
+# Create a data frame with the count of releases per year
+df_year <- data.frame(table(df$year))
+
+# Plot a histogram with ggplot2
+ggplot(df_year, aes(x = Var1, y = Freq)) + 
+  geom_bar(stat = "identity", fill = "blue") +
+  ggtitle("Number of Releases per Year") +
+  xlab("Year") + ylab("Count")
+
+```
+
+```{r}
+
+```
+#kmeans clustering
+
+```{r}
+
+# Set the number of clusters
+num_clusters <- 4
+
+# Run k-means clustering
+kmeans_model <- kmeans(df, centers = num_clusters)
+
+# Print the summary of the model
+summary(kmeans_model)
+
+```
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
